@@ -27,7 +27,8 @@ DEFAULT_WHISPER_MODEL = "base"
 DEFAULT_LLM_URL = "http://localhost:11434/v1/chat/completions"
 DEFAULT_LLM_MODEL = "llama3.2:3b"
 DEFAULT_MAX_DIFF_CHARS = 30_000
-DEFAULT_TIMEOUT_SECONDS = 90\nVERSION = "1.1.0"
+DEFAULT_TIMEOUT_SECONDS = 90
+VERSION = "1.1.0"
 
 CONVENTIONAL_COMMIT_RE = re.compile(
     r"^(?P<type>feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)"
