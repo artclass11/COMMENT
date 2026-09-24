@@ -27,7 +27,7 @@ DEFAULT_WHISPER_MODEL = "base"
 DEFAULT_LLM_URL = "http://localhost:11434/v1/chat/completions"
 DEFAULT_LLM_MODEL = "llama3.2:3b"
 DEFAULT_MAX_DIFF_CHARS = 30_000
-DEFAULT_TIMEOUT_SECONDS = 90\nVERSION = "1.0.0"
+DEFAULT_TIMEOUT_SECONDS = 90\nVERSION = "1.1.0"
 
 CONVENTIONAL_COMMIT_RE = re.compile(
     r"^(?P<type>feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)"
@@ -280,6 +280,11 @@ def parse_args() -> argparse.Namespace:
         description="Generate a Conventional Commit from your voice summary and staged Git diff.",
     )
     parser.add_argument("--version", action="version", version=f"VibeCommit {VERSION}")\n    parser.add_argument("--seconds", type=float, default=10.0, help="Recording duration, max 10 seconds (default: 10).")
+    parser.add_argument(
+        "--text",
+        metavar="INTENT",
+        help="Use typed intent instead of microphone recording; useful for CI, servers, and quick tests.",
+    )
     parser.add_argument("--sample-rate", type=int, default=DEFAULT_SAMPLE_RATE, help="Microphone sample rate (default: 16000).")
     parser.add_argument("--whisper-model", default=os.getenv("VIBECOMMIT_WHISPER_MODEL", DEFAULT_WHISPER_MODEL), help="Whisper model (default: base).")
     parser.add_argument("--llm-url", default=os.getenv("VIBECOMMIT_LLM_URL", DEFAULT_LLM_URL), help="OpenAI-compatible chat-completions URL.")
@@ -297,13 +302,21 @@ def main() -> int:
         raise VibeCommitError("--max-diff-chars must be positive.")
     if args.sample_rate < 8_000:
         raise VibeCommitError("--sample-rate must be at least 8000 Hz.")
+    if args.timeout <= 0:
+        raise VibeCommitError("--timeout must be positive.")
 
     wav_path: Path | None = None
     try:
         diff = get_staged_diff(args.max_diff_chars)
-        wav_path = record_audio(args.seconds, args.sample_rate)
-        transcript = transcribe_with_whisper(wav_path, args.whisper_model)
-        print(f"📝 Heard: {transcript}")
+        if args.text is not None:
+            transcript = " ".join(args.text.split())
+            if not transcript:
+                raise VibeCommitError("--text cannot be empty.")
+            print(f"Intent: {transcript}")
+        else:
+            wav_path = record_audio(args.seconds, args.sample_rate)
+            transcript = transcribe_with_whisper(wav_path, args.whisper_model)
+            print(f"📝 Heard: {transcript}")
         commit_message = call_llm(
             transcript,
             diff,
