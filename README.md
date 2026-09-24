@@ -1,11 +1,17 @@
 # COMMENT — VibeCommit
 
+**Say what you changed. COMMENT writes the Git commit.**
+
+[![CI](https://github.com/artclass11/COMMENT/actions/workflows/ci.yml/badge.svg)](https://github.com/artclass11/COMMENT/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+
+![COMMENT demo](assets/demo.svg)
+
 **Voice → staged diff → Conventional Commit.**
 
 VibeCommit is a small, open-source CLI that records up to 10 seconds from your default microphone, transcribes it locally with Whisper, reads `git diff --staged`, sends only the transcript + staged diff to an OpenAI-compatible LLM endpoint, and proposes one Conventional Commit subject line.
 
 ```text
-$ python VibeCommit.py
+$ vibecommit
 
 🎙  Speak now — recording for up to 10s
 🧠 Transcribing locally with Whisper (base)...
@@ -54,6 +60,13 @@ sudo apt-get install -y portaudio19-dev ffmpeg
 On macOS, install FFmpeg with Homebrew (`brew install ffmpeg`). On Windows, install FFmpeg and ensure `ffmpeg.exe` is on `PATH`; also check Windows microphone permissions and the default input device.
 
 ## Install
+
+### Fastest install
+
+```bash
+python -m pip install vibecommit
+vibecommit --version
+```
 
 ```bash
 git clone <your-github-url>/COMMENT.git
@@ -109,20 +122,28 @@ $env:VIBECOMMIT_LLM_API_KEY="your-secret"
 
 ## Usage
 
+### No microphone? Use typed intent
+
+```bash
+vibecommit --text "add request validation and rate limiting" --dry-run
+```
+
+The typed path keeps the same staged-diff + LLM workflow and makes COMMENT usable on CI runners, servers, accessibility setups, and quick demos.
+
 Stage your changes first:
 
 ```bash
 git add src/ README.md
-python VibeCommit.py
+vibecommit
 ```
 
 Useful options:
 
 ```bash
-python VibeCommit.py --seconds 6
-python VibeCommit.py --whisper-model tiny.en
-python VibeCommit.py --max-diff-chars 12000
-python VibeCommit.py --dry-run
+vibecommit --seconds 6
+vibecommit --whisper-model tiny.en
+vibecommit --max-diff-chars 12000
+vibecommit --dry-run
 ```
 
 ## Data and security model
@@ -168,7 +189,7 @@ MIT. See `LICENSE`.
 
 ## Release validation
 
-The 1.0.0 release includes automated tests for commit validation, staged-diff handling, OpenAI-compatible LLM responses, audio cleanup, and core parsing.
+The 1.1.0 release includes automated tests for commit validation, staged-diff handling, OpenAI-compatible LLM responses, audio cleanup, and core parsing.
 
 Run the test suite locally:
 
