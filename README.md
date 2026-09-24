@@ -61,10 +61,10 @@ On macOS, install FFmpeg with Homebrew (`brew install ffmpeg`). On Windows, inst
 
 ## Install
 
-### Fastest install
+### Fastest install from GitHub
 
 ```bash
-python -m pip install vibecommit
+python -m pip install git+https://github.com/artclass11/COMMENT.git
 vibecommit --version
 ```
 
