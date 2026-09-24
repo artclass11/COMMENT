@@ -36,6 +36,10 @@ class VibeCommitTests(unittest.TestCase):
             msg = vc.call_llm("add validation", "diff", url="http://localhost/test", model="test", api_key=None, timeout=2)
         self.assertEqual(msg, "feat(api): add validation")
 
+    def test_text_intent_argument_is_supported(self):
+        with patch.object(sys, "argv", ["VibeCommit.py", "--text", "  fix empty input  "]):
+            args = vc.parse_args()
+        self.assertEqual(args.text, "  fix empty input  ")
     def test_audio_cleanup_path(self):
         fake_sd = types.SimpleNamespace(rec=lambda *a, **k: [[0]], wait=lambda: None)
         fake_wav = types.SimpleNamespace(write=lambda *a, **k: Path(a[0]).write_bytes(b"RIFF"))
