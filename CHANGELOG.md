@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.0 - 2026-09-25
+
+### Added
+- Installable `vibecommit` CLI entry point through `pyproject.toml`.
+- `--text` typed-intent mode for headless environments, CI, accessibility, and fast tests.
+- `--timeout` input validation.
+- GitHub issue templates and a terminal demo asset.
+
+### Improved
+- README positioning and quick-start instructions for faster adoption.
 ## 1.0.0 - 2026-09-25
 
 ### Added
